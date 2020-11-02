@@ -80,7 +80,14 @@
 
 >  此项目由Sunny个人构建，未采用前后端分离，使用Thymeleaf模板引擎动态渲染html。希望认识会使用Vue的前端朋友或者会用SpringBoot的后端朋友一起做项目。
 
-
+![Snipaste_2020-11-02_18-29-45.png](https://i.loli.net/2020/11/02/nLRsJ87F2SiV6eE.png)
+![Snipaste_2020-11-02_18-30-07.png](https://i.loli.net/2020/11/02/KSm3xqYPHTzWUby.png)
+![Snipaste_2020-11-02_18-29-48.png](https://i.loli.net/2020/11/02/snEWQhI7D1CABco.png)
+![Snipaste_2020-11-02_18-30-31.png](https://i.loli.net/2020/11/02/iAhWMSIfrxTK6wy.png)
+![Snipaste_2020-11-02_18-29-54.png](https://i.loli.net/2020/11/02/inxU3BuRPqyoCDT.png)
+![Snipaste_2020-11-02_18-30-25.png](https://i.loli.net/2020/11/02/XysM1TaK3edDjul.png)
+![Snipaste_2020-11-02_18-30-29.png](https://i.loli.net/2020/11/02/9Bm7iEJoLNhU8zC.png)
+![Snipaste_2020-11-02_18-29-39.png](https://i.loli.net/2020/11/02/pVwldDPMQ6qY9iO.png)
 
 
 
