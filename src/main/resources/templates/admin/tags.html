@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="bar::head(~{::title})">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>标签管理</title>
+</head>
+<body>
+
+  <!--导航-->
+  <div th:replace="bar::adminHeader"></div>
+
+
+
+  <!--中间内容-->
+<div id="pjax-container">
+  <div class="ui attached menu m-bg-bar">
+    <div class="ui container">
+      <div class="right menu">
+        <a href="#" data-pjax th:href="@{/manage/tags/input}" class="item">新增</a>
+        <a href="#" data-pjax th:href="@{/manage/tags}" class="active blue item">列表</a>
+      </div>
+    </div>
+  </div>
+  <div class="m-container-small m-padded-tb-big animated fadeIn">
+    <div class="ui container">
+      <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+        <i class="close icon"></i>
+        <div class="header">提示：</div>
+        <p th:text="${message}">恭喜，操作成功！</p>
+      </div>
+      <table class="ui compact table">
+        <thead>
+        <tr>
+          <th></th>
+          <th>名称</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tag,iterStat : ${pageInfo.list}">
+          <td th:text="${iterStat.count}">1</td>
+          <td th:text="${tag.name}">刻意练习清单</td>
+          <td>
+            <a href="#" data-pjax th:href="@{/manage/tags/{id}/input(id=${tag.id})}" class="ui small basic green button">编辑</a>
+            <a href="#" data-pjax th:href="@{/manage/tags/{id}/delete(id=${tag.id})}" class="ui small basic red button">删除</a>
+          </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+          <th colspan="6" >
+            <div class="ui attached segment m-bg" th:fragment="pagination">
+              <div style="text-align: center;">
+                <div class="ui stackable three column grid">
+                  <table class="m-mobile-wide">
+                    <tbody style="text-align: center;">
+                    <tr >
+                      <td th:if="${pageInfo.pages}>1">
+                        <a href="" data-pjax th:href="@{/manage/tags(pageNum=${pageInfo.prePage})}" class="ui button basic mini" th:if="${pageInfo.prePage}">上一页</a>
+                      </td>
+                      <td>
+                        第
+                        <span class="m-mycolor" th:text="${pageInfo.pageNum}">
+                                                1
+                                            </span>
+                        页/共
+                        <span class="m-mycolor" th:text="${pageInfo.pages}">
+                                                9
+                                            </span>
+                        页 共
+                        <span class="m-mycolor" th:text="${pageInfo.total}">
+                                                9
+                                            </span>
+                        条
+                      </td>
+                      <td>
+                        <div class="ui icon transparent input">
+                          <input type="text" placeholder="页码" id="page" style="width: 60px">
+                          <button id="pageTo" class="ui button small m-bg">跳转</button>
+                        </div>
+                      </td>
+                      <td th:if="${pageInfo.pages}>1">
+                        <a href="" data-pjax th:href="@{/manage/tags(pageNum=${pageInfo.nextPage})}" class="ui button basic mini" th:if="${pageInfo.nextPage}">下一页</a>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </th>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <script>
+    $('.menu.toggle').click(function () {
+      $('.m-item').toggleClass('m-mobile-hide');
+    });
+
+    $('.ui.dropdown').dropdown({
+      on : 'hover'
+    });
+
+    //消息提示关闭初始化
+    $('.message .close').on('click', function () {
+      $(this).closest('.message').transition('fade');
+    });
+
+    //页码跳转
+    $('#pageTo').click(function () {
+      let val = $('#page').val();
+      location.href = "/manage/tags?pageNum="+val;
+    })
+  </script>
+</div>
+
+  <br>
+  <br>
+  <!--底部footer-->
+  <div th:replace="bar::noMusicFooter"></div>
+
+  <!--由于thymeleaf模板的独特性，此代码在模板中是可用的，但是在静态页面中是一行注释-->
+  <!--/*/<th:block th:replace="bar::script"></th:block>/*/-->
+  <script>
+    $('.menu.toggle').click(function () {
+      $('.m-item').toggleClass('m-mobile-hide');
+    });
+
+    $('.ui.dropdown').dropdown({
+      on : 'hover'
+    });
+
+    //消息提示关闭初始化
+    $('.message .close').on('click', function () {
+        $(this).closest('.message').transition('fade');
+      });
+
+    //页码跳转
+    $('#pageTo').click(function () {
+      let val = $('#page').val();
+      location.href = "/manage/tags?pageNum="+val;
+    })
+  </script>
+
+  <script>
+    $(function() {
+      $(document).pjax(' a[data-pjax]', '#pjax-container',{fragment: '#pjax-container',timeout: 8000, type: 'GET'});
+
+      $(document).on('submit', 'form', function(event) {
+        //var container = $(this).closest('[pjax-container]');
+        $.pjax.submit(event, '#pjax-container', {
+          fragment:'#pjax-container', timeout:8000
+        });
+      });
+    })
+  </script>
+</body>
+</html>

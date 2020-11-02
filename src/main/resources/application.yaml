@@ -1,0 +1,42 @@
+server:
+  port: 8666
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1/sunnyblog
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  profiles:
+    active: dev
+  # 禁用模板缓存
+  thymeleaf:
+    cache: false
+  mvc:
+    static-path-pattern: /static/**
+  resources:
+    static-locations: classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: deleted # 全局逻辑删除的实体字段名
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+      id-type: assign_id #全局ID生成
+  mapper-locations: classpath:pers/sunny/blog/mapper/**/*.xml
+logging:
+  pattern:
+    console: "%d - %msg%n"
+  file:
+    path: /logs/blog.log
+  level:
+    pers.sunny.blog: trace
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

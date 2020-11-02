@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="bar::head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viePort" content="width=device-width,initial-scale=1.0,maximum-scale=1">
+    <title>留言板</title>
+</head>
+<body>
+<!--顶部导航-->
+<div th:replace="bar::header"></div>
+
+<div class="m-container m-padded-tb-big animated fadeInUp" style="min-height: 85%">
+    <div class="ui container">
+        <!--留言区域-->
+        <div class="ui top bottom attached segment m-bg">
+            <h2 class="ui m-bottom-color dividing blue header">留言</h2>
+            <div id="message-form" class="ui form m-bg-bar">
+                <input type="hidden" name="parentMessageId" value="-1">
+                <div class="field">
+                    <textarea name="content" placeholder="请输入评论信息..." class="m-bg-bar" style="resize: none"></textarea>
+                </div>
+                <div class="fields">
+                    <div class="field m-mobile-wide m-margin-bottom-small">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            <input type="text" name="nickname" placeholder="您的昵称" class="m-bg-bar"
+                                   th:value="${session.user}!=null ? ${session.user.nickname}">
+                        </div>
+                    </div>
+                    <div class="field m-mobile-wide m-margin-bottom-small">
+                        <div class="ui left icon input">
+                            <i class="mail icon"></i>
+                            <input type="text" name="email" placeholder="您的邮箱"
+                                   th:value="${session.user}!=null ? ${session.user.email}" class="m-bg-bar">
+                        </div>
+                    </div>
+                    <div class="field  m-margin-bottom-small m-mobile-wide">
+                        <button id="message-btn" type="button" class="ui m-bg-bar button m-mobile-wide"><i
+                                class="edit icon"></i>发布
+                        </button>
+                    </div>
+                </div>
+                <div class="ui error message"></div>
+            </div>
+            <!--留言列表-->
+            <div class="ui bottom attached segment m-bg-bar" id="message-container">
+                <div th:fragment="messageList">
+                    <div class="ui threaded comments m-bg-bar" style="max-width: 100%">
+                        <h3 class="ui dividing header blue">留言</h3>
+                        <div class="comment" th:each="message : ${pageInfo.list}">
+                            <a class="avatar">
+                                <img src="../static/img/p2.JPG" th:src="@{${message.avatar}}" alt="">
+                            </a>
+                            <div class="content">
+                                <a class="author">
+                                    <span th:text="${message.nickname}">Sunny</span>
+                                    <div th:if="${message.adminMessage}"
+                                         class="ui mini basic blue left pointing label m-padded-mini">站长
+                                    </div>
+                                </a>
+                                <div class="metadata">
+                                    <span class="date"
+                                          th:text="${#temporals.format(message.createTime,'yyyy-MM-dd HH:mm')}">Today at 5:42PM</span>
+                                </div>
+                                <div class="text" th:text="${message.content}">
+                                    帅啊
+                                </div>
+                                <div class="actions">
+                                    <a class="reply" data-messageid="1" data-messagenickname="Sunny"
+                                       th:attr="data-messageid=${message.id},data-messagenickname=${message.nickname}"
+                                       onclick="reply(this)">回复</a>
+                                    <a class="delete" href="#" data-pjax
+                                       th:href="@{/sunnyblog/messages/{messageId}/delete(messageId=${message.id})}"
+                                       onclick="return confirm('确定要删除该评论吗？')" th:if="${session.user}">删除</a>
+                                </div>
+                            </div>
+                            <div class="comments" th:if="${#arrays.length(message.replyMessages)}>0">
+                                <div class="comment" th:each="reply : ${message.replyMessages}">
+                                    <a class="avatar">
+                                        <img src="../static/img/p2.JPG" th:src="@{${reply.avatar}}" alt="">
+                                    </a>
+                                    <div class="content">
+                                        <a class="author">
+                                            <span th:text="${reply.nickname}">Sunny</span>
+                                            <div th:if="${reply.adminMessage}"
+                                                 class="ui mini blue left pointing label m-padded-mini">站长
+                                            </div>
+                                            <span th:text="|@ ${reply.parentNickname}|" class="m-mycolor">@ Sunny</span>
+                                        </a>
+                                        <div class="metadata">
+                                            <span class="date"
+                                                  th:text="${#temporals.format(reply.createTime,'yyyy-MM-dd HH:mm')}">Today at 5:42PM</span>
+                                        </div>
+                                        <div class="text" th:text="${reply.content}">
+                                            帅啊
+                                        </div>
+                                        <div class="actions">
+                                            <a class="reply" data-messageid="1" data-messagenickname="Sunny"
+                                               th:attr="data-messageid=${reply.id},data-messagenickname=${reply.nickname}"
+                                               onclick="reply(this)">回复</a>
+                                            <a class="delete" href="#" data-pjax
+                                               th:href="@{/sunnyblog/messages/{messageId}/delete(messageId=${reply.id})}"
+                                               onclick="return confirm('确定要删除该评论吗？')" th:if="${session.user}">删除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--分页条第二版-->
+            <div class="ui attached segment m-bg-bar">
+                <div class="ui stackable center aligned grid m-bg-bar">
+                    <div th:if="${pageInfo.pages}>1">
+                        <a href="" th:href="@{/sunnyblog/messages(pageNum=${pageInfo.prePage})}"
+                           class="ui button basic mini" th:if="${pageInfo.prePage}">上一页</a>
+                    </div>
+                    <div class="center aligned">
+                        第
+                        <span class="m-mycolor" th:text="${pageInfo.pageNum}">
+                                                1
+                                            </span>
+                        页/共
+                        <span class="m-mycolor" th:text="${pageInfo.pages}">
+                                                9
+                                            </span>
+                        页 共
+                        <span class="m-mycolor" th:text="${pageInfo.total}">
+                                                9
+                                            </span>
+                        条
+                    </div>
+                    <div class="ui icon transparent input" th:if="${pageInfo.pages} > 2">
+                        <input type="text" placeholder="页码" id="pageNums" style="width: 60px">
+                        <button id="pageTo" class="ui button small m-bg-bar">跳转</button>
+                    </div>
+                    <div th:if="${pageInfo.pages}>1">
+                        <a href="" th:href="@{/sunnyblog/messages(pageNum=${pageInfo.nextPage})}"
+                           class="ui button basic mini m-bg-bar" th:if="${pageInfo.nextPage}">下一页</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--底部footer-->
+<div th:replace="bar::noMusicFooter"></div>
+
+<!--由于thymeleaf模板的独特性，此代码在模板中是可用的，但是在静态页面中是一行注释-->
+<!--/*/<th:block th:replace="bar::script"></th:block>/*/-->
+
+<script th:inline="javascript">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+
+    //页码跳转
+    $('#pageTo').click(function () {
+        let val = $('#pageNums').val();
+        location.href = "/sunnyblog/messages?pageNum=" + val;
+    })
+
+    //评论表单验证
+    $('.ui.form').form({
+        fields: {
+            title: {
+                identifier: 'content',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入评论内容'
+                }]
+            },
+            content: {
+                identifier: 'nickname',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入昵称'
+                }]
+            },
+            type: {
+                identifier: 'email',
+                rules: [{
+                    type: 'email',
+                    prompt: '请填写正确的邮箱地址'
+                }]
+            }
+        }
+    });
+
+    $('#message-btn').click(function () {
+        let form = $('.ui.form').form('validate form');
+        if (form) {
+            postData();
+        }
+    });
+
+    function postData() {
+        $("#message-container").load(/*[[@{/sunnyblog/addMessages(pageNum=${pageInfo.pageNum})}]]*/"", {
+            "parentMessageId": $("[name='parentMessageId']").val(),
+            "nickname": $("[name='nickname']").val(),
+            "email": $("[name='email']").val(),
+            "content": $("[name='content']").val()
+        }, function (responseTxt, statusTxt, xhr) {
+            clearContent();
+        });
+    }
+
+    function clearContent() {
+        let $content = $("[name='content']");
+        $content.val('');
+        $("[name='parentMessageId']").val(-1);
+        $content.attr("placeholder", "请输入评论信息...");
+    }
+
+
+    function reply(obj) {
+        let messageId = $(obj).data('messageid');
+        let messageNickname = $(obj).data('messagenickname');
+        $("[name='content']").attr("placeholder", "@" + messageNickname).focus();
+        $("[name='parentMessageId']").val(messageId);
+        $(window).scrollTo($('#message-form'), 500);
+    }
+</script>
+</body>
+</html>

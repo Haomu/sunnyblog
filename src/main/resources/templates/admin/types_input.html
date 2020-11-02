@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="bar::head(~{::title})">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分类新增</title>
+</head>
+<body>
+
+  <!--导航-->
+  <div th:replace="bar::adminHeader"></div>
+
+
+
+  <!--中间内容-->
+  <div id="pjax-container">
+    <div class="ui attached menu m-bg-bar">
+      <div class="ui container">
+        <div class="right menu">
+          <a href="#" data-pjax th:href="@{/manage/types/input}" class="active blue item">新增</a>
+          <a href="#" data-pjax th:href="@{/manage/types}" class="item">列表</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-container-small m-padded-tb-big animated fadeIn">
+      <div class="ui container">
+        <form action="#" method="post" th:object="${type}" th:action="@{/manage/types}" class="ui form">
+          <input type="hidden" name="id" th:value="*{id}">
+          <div class="field">
+            <div class="ui left labeled input">
+              <label class="ui green basic label">名称</label>
+              <input type="text" name="name" placeholder="分类名称" th:value="*{name}" >
+            </div>
+          </div>
+
+          <div class="ui error message"></div>
+          <!--/*/
+          <div class="ui negative message" th:if="${#fields.hasErrors('name')}"  >
+            <i class="close icon"></i>
+            <div class="header">验证失败</div>
+            <p th:errors="*{name}">提交信息不符合规则</p>
+          </div>
+           /*/-->
+          <div class="ui right aligned container">
+            <button type="button" class="ui button" onclick="window.history.go(-1)" >返回</button>
+            <button class="ui green submit button">提交</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    <script>
+
+      $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+      });
+
+      $('.ui.dropdown').dropdown({
+        on : 'hover'
+      });
+
+      $('.ui.form').form({
+        fields : {
+          title : {
+            identifier: 'name',
+            rules: [{
+              type : 'empty',
+              prompt: '请输入分类名称'
+            }]
+          }
+        }
+      });
+    </script>
+  </div>
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <!--底部footer-->
+  <div th:replace="bar::noMusicFooter"></div>
+
+  <!--由于thymeleaf模板的独特性，此代码在模板中是可用的，但是在静态页面中是一行注释-->
+  <!--/*/<th:block th:replace="bar::script"></th:block>/*/-->
+
+  <script>
+
+    $('.menu.toggle').click(function () {
+      $('.m-item').toggleClass('m-mobile-hide');
+    });
+
+    $('.ui.dropdown').dropdown({
+      on : 'hover'
+    });
+
+    $('.ui.form').form({
+      fields : {
+        title : {
+          identifier: 'name',
+          rules: [{
+            type : 'empty',
+            prompt: '请输入分类名称'
+          }]
+        }
+      }
+    });
+  </script>
+  <script>
+    $(function() {
+      $(document).pjax('a[data-pjax]', '#pjax-container',{fragment: '#pjax-container',timeout: 8000, type: 'GET'});
+
+      $(document).on('submit', 'form', function(event) {
+        //var container = $(this).closest('[pjax-container]');
+        $.pjax.submit(event, '#pjax-container', {
+          fragment:'#pjax-container', timeout:8000
+        });
+      });
+    })
+  </script>
+</body>
+</html>

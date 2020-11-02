@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="bar::head(~{::title})">
+    <meta charset="UTF-8">
+    <title>欢迎你</title>
+</head>
+<body>
+<!--顶部导航-->
+<div th:replace="bar::adminHeader"></div>
+
+<!--中间内容-->
+<div class="m-container-small m-padded-tb-big animated fadeIn">
+    <div class="ui container">
+        <div class="ui success large message">
+            <h3>Hi,</h3>
+            <p>Sunny，欢迎登录！</p>
+        </div>
+        <img src="https://i.loli.net/2020/08/10/ocHWYBEez7aNvjn.jpg" alt="" class="ui rounded bordered fluid image">
+    </div>
+</div>
+
+<br/>
+<br/>
+
+<!--底部footer-->
+<div th:replace="bar::noMusicFooter"></div>
+
+<!--由于thymeleaf模板的独特性，此代码在模板中是可用的，但是在静态页面中是一行注释-->
+<!--/*/<th:block th:replace="bar::script"></th:block>/*/-->
+
+
+<script>
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+
+</script>
+</body>
+</html>

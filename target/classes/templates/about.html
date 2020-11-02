@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="bar::head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viePort" content="width=device-width,initial-scale=1.0,maximum-scale=1">
+    <title>关于我</title>
+</head>
+<body>
+    <!--顶部导航-->
+    <div th:replace="bar::header"></div>
+
+    <!--中间内容-->
+    <div id="pjax-container">
+        <div class="m-container m-padded-tb-big">
+        <div class="ui container">
+            <div class="ui stackable grid">
+                <div class="eleven wide column animated rotateInDownLeft">
+                    <div class="ui segment m-bg">
+                        <div>
+                            <h3>关于我</h3>
+                            <span style="font-size: medium">2022届毕业生，19年10月份开始学习Java，至今。</span>
+                            <br/>
+                            <br/>
+                            <span style="font-size: medium">希望能结交很多朋友，能够一起解决问题，交流Java相关内容，新人，请多多指教。</span>
+                            <br/>
+                            <br/>
+                            <span style="font-size: medium">也希望未来能够带着我的小白菜勇闯天涯。</span>
+                            <h3>关于博客</h3>
+                            <p><span style="font-size: larger;">技术栈：</span></p>
+                            <p><span style="font-size: medium">前端：Thymeleaf 3.0.11+ SemanticUI 2.4</span></p>
+                            <p><span style="font-size: medium">后端：Springboot 2.3.2 + Myabtis 3.5.5 + MybatisPlus 3.3.2 + Shiro 1.5.3</span></p>
+                            <p><span style="font-size: medium">数据库：MySQL 8.0.21 &nbsp;&nbsp;
+                                并且使用了&nbsp;&nbsp;Druid 1.1.23&nbsp;&nbsp;连接池</span></p>
+                            <p><span style="font-size: medium">
+                                第二版准备使用Redis作为缓存，ElasticSearch作为全局搜索
+                            </span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="four wide column animated rotateInDownRight">
+                    <div class="ui top attached segment m-bg">
+                        <div class="ui m-mycolor header">关于我</div>
+                    </div>
+                    <div class="ui card attached m-bg centered">
+                        <a href="#" class="image">
+                            <img src="https://i.loli.net/2020/08/10/ZCv5rFPYqDmd3fp.jpg" alt="" class="ui circular image">
+                        </a>
+                    </div>
+                    <div class="ui attached segment m-bg">
+                        <p class="m-text">喜欢Java，热爱生活，希望毕业前Java技术能更进一步，毕业找到一份心仪的工作</p>
+                    </div>
+                    <div class="ui bottom attached segment m-bg">
+                        <a href="#" class="ui m-bg icon wechat circular button"><i class="icon green weixin"></i></a>
+                        <a href="http://wpa.qq.com/msgrd?v=3&uin=731574232&site=qq&menu=yes" target="_blank" class="ui m-bg icon qq circular button"><i class="icon blue qq"></i></a>
+                    </div>
+                    <div class="ui wechat-qr flowing popup transition hidden">
+                        <img src="https://i.loli.net/2020/08/10/nJX9C3PAfcjhylF.jpg" alt="" class="ui rounded image" style="width: 110px">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    <br>
+    <br>
+    <br>
+
+
+    <!--底部footer-->
+    <div th:replace="bar::musicFooter"></div>
+
+    <!--由于thymeleaf模板的独特性，此代码在模板中是可用的，但是在静态页面中是一行注释-->
+    <!--/*/<th:block th:replace="bar::script"></th:block>/*/-->
+
+    <script>
+        $('.menu.toggle').click(function () {
+            $('.m-item').toggleClass('m-mobile-hide');
+        });
+
+        $('.wechat').popup({
+            popup : $('.wechat-qr'),
+            position: 'bottom center'
+        });
+    </script>
+    <script>
+        $(function() {
+            $(document).pjax(' a[data-pjax]', '#pjax-container',{fragment: '#pjax-container',timeout: 8000, type: 'GET'});
+
+            $(document).on('submit', 'form', function(event) {
+                //var container = $(this).closest('[pjax-container]');
+                $.pjax.submit(event, '#pjax-container', {
+                    fragment:'#pjax-container', timeout:8000
+                });
+            });
+
+            $(document).on('pjax:send', function() {
+                $(".loading").css("display", "block");
+            });
+
+            $(document).on('pjax:complete', function() {
+                $(".loading").css("display", "none");
+            });
+        })
+    </script>
+</body>
+</html>

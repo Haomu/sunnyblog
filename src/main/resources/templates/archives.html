@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="bar::head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viePort" content="width=device-width,initial-scale=1.0,maximum-scale=1">
+    <title>归档</title>
+</head>
+<body>
+    <!--顶部导航-->
+    <div th:replace="bar::header"></div>
+
+    <!--中间内容-->
+    <div id="pjax-container">
+        <div class="m-container-small m-padded-tb-big animated fadeInUpBig">
+            <div class="ui container">
+                <!--header-->
+                <div class="ui top attached padded segment m-bg">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui blue header">归档</h3>
+                        </div>
+                        <div class="right aligned column">
+                            共 <h2 class="ui m-mycolor header m-inline-block m-text-thin" th:text="${blogCount}"> 114 </h2> 篇博客
+                        </div>
+                    </div>
+                </div>
+                <th:block th:each="item : ${archiveBlog}">
+                    <h3 class="ui m-mycolor center aligned header" th:text="${item.key}">2020</h3>
+                    <div class="ui fluid vertical menu m-bg">
+                        <a href="#" data-pjax th:href="@{/sunnyblog/{id}(id=${blog.id})}" th:each="blog : ${item.value}" target="_blank" class="item">
+                    <span>
+                    <i class="mini blue circle icon"></i>&nbsp;<span th:text="${blog.title}">关于刻意练习的清单</span>
+                    <div class="ui m-mycolor left pointing label m-padded-mini" th:text="${#temporals.format(blog.updateTime,'MMMdd')}">&nbsp;09月03号</div>
+                    </span>
+                            <div class="ui blue basic label m-padded-mini" th:text="${blog.flag}">原创</div>
+                        </a>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <!--底部footer-->
+    <div th:replace="bar::musicFooter"></div>
+
+    <!--由于thymeleaf模板的独特性，此代码在模板中是可用的，但是在静态页面中是一行注释-->
+    <!--/*/<th:block th:replace="bar::script"></th:block>/*/-->
+
+    <script>
+        $('.menu.toggle').click(function () {
+            $('.m-item').toggleClass('m-mobile-hide');
+        });
+    </script>
+    <script>
+        $(function() {
+            $(document).pjax('a[data-pjax]', '#pjax-container',{fragment: '#pjax-container',timeout: 8000, type: 'GET'});
+
+            $(document).on('submit', 'form', function(event) {
+                //var container = $(this).closest('[pjax-container]');
+                $.pjax.submit(event, '#pjax-container', {
+                    fragment:'#pjax-container', timeout:8000
+                });
+            });
+        })
+    </script>
+</body>
+</html>

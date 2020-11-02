@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.sunny.blog.mapper.TagMapper">
+
+    <update id="updateTagBlogsByTagIds">
+        UPDATE tag SET tag_blogs =
+        (SELECT COUNT(id) FROM blog WHERE deleted = 0 AND published = 1 AND tag_ids LIKE CONCAT('%',#{tagId},'%'))
+        WHERE id = #{tagId}
+    </update>
+</mapper>

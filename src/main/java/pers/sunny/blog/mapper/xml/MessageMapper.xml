@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.sunny.blog.mapper.MessageMapper">
+
+    <select id="listMessageByBlogIdAndParentMessageId" resultType="pers.sunny.blog.entity.Message">
+        select * from message
+        where parent_message_id = #{id} and deleted = 0
+        order by create_time desc
+    </select>
+</mapper>

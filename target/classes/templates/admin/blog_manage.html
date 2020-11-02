@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="bar::head(~{::title})">
+    <meta charset="UTF-8">
+    <title>博客管理</title>
+</head>
+<body>
+<!--顶部导航-->
+<div th:replace="bar::adminHeader"></div>
+
+<div class="ui attached menu m-bg-bar">
+    <div class="ui container">
+        <div class="right menu">
+            <a href="#" th:href="@{/manage/blogs/input}" class="item">新增</a>
+            <a href="#" th:href="@{/manage/blogs}" class="active blue item">列表</a>
+        </div>
+    </div>
+</div>
+
+<!--中间内容-->
+    <div class="m-container-small m-padded-tb-big animated fadeIn">
+        <div class="ui container">
+            <div class="ui segment form m-bg-bar">
+                <input type="hidden" name="page">
+                <div class="inline fields">
+                    <div class="field">
+                        <input type="text" name="title" placeholder="标题">
+                    </div>
+                    <div class="field">
+                        <div class="ui labeled action input">
+                            <div class="ui type selection dropdown">
+                                <input type="hidden" name="typeId">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">分类</div>
+                                <div class="menu">
+                                    <div th:each="type : ${types}" class="item" data-value="1" th:data-value="${type.id}"
+                                         th:text="${type.name}">错误日志
+                                    </div>
+                                    <!--/*-->
+                                    <div class="item" data-value="2">开发者手册</div>
+                                    <!--*/-->
+                                </div>
+                            </div>
+                            <button id="clear-btn" class="ui clear button m-bg-bar">clear</button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="recommend" name="recommend" checked>
+                            <label for="recommend">推荐</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <button type="button" id="search-btn" class="ui mini blue button"><i class="search icon"></i>搜索
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="table-container">
+                <table class="ui compact table m-bg" th:fragment="blogList">
+                    <thead>
+                    <tr>
+                        <td></td>
+                        <td>标题</td>
+                        <td>类型</td>
+                        <td>推荐</td>
+                        <td>博客状态</td>
+                        <td>更新时间</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="blog,iterStat : ${pageInfo.list}">
+                        <td th:text="${iterStat.count}">1</td>
+                        <td th:text="${blog.title}">刻意练习清单</td>
+                        <td th:text="${blog.getType().name}">认知升级</td>
+                        <td th:text="${blog.recommend} ? '是' : '否'">是</td>
+                        <td th:text="${blog.published} ? '发布' : '草稿'">是</td>
+                        <td th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd HH:mm')}">2017-10-02 09:45</td>
+                        <td>
+                            <a href="#" th:href="@{/manage/blogs/{id}/input(id=${blog.id})}"
+                               class="ui mini green basic button">编辑</a>
+                            <a href="#" th:href="@{/manage/blogs/{id}/delete(id=${blog.id})}"
+                               class="ui mini red basic button">删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="7">
+                            <div class="ui attached segment" th:fragment="pagination">
+                                <div class="ui stackable three column grid m-bg">
+                                    <table class="m-mobile-wide">
+                                        <tbody style="text-align: center;">
+                                        <tr>
+                                            <td th:if="${pageInfo.pages}>1">
+                                                <a onclick="page(this)" th:attr="data-page=${pageInfo.prePage}"
+                                                   class="ui button basic mini" th:if="${pageInfo.prePage}">上一页</a>
+                                            </td>
+                                            <td>
+                                                第
+                                                <span class="m-mycolor" th:text="${pageInfo.pageNum}">
+                                                1
+                                            </span>
+                                                页/共
+                                                <span class="m-mycolor" th:text="${pageInfo.pages}">
+                                                9
+                                            </span>
+                                                页 共
+                                                <span class="m-mycolor" th:text="${pageInfo.total}">
+                                                9
+                                            </span>
+                                                条
+                                            </td>
+                                            <td>
+                                                <div class="ui icon transparent input">
+                                                    <input type="text" placeholder="页码" id="pageNums" style="width: 60px">
+                                                    <button id="pageTo" class="ui button small m-bg">跳转</button>
+                                                </div>
+                                            </td>
+                                            <td th:if="${pageInfo.pages}>1">
+                                                <a onclick="page(this)" th:attr="data-page=${pageInfo.nextPage}"
+                                                   class="ui button basic mini" th:if="${pageInfo.nextPage}">下一页</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    </tfoot>
+                </table>
+                <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+                    <i class="close icon"></i>
+                    <div class="header">提示：</div>
+                    <p th:text="${message}">恭喜，操作成功！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!--底部footer-->
+<div th:replace="bar::noMusicFooter"></div>
+
+
+<!--由于thymeleaf模板的独特性，此代码在模板中是可用的，但是在静态页面中是一行注释-->
+<!--/*/<th:block th:replace="bar::script"></th:block>/*/-->
+
+<script>
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+    //上一页下一页页码跳转
+    function page(obj) {
+        $("[name='page']").val($(obj).data("page"));
+        loaddata()
+    }
+    //搜索时进行页码归零
+    $("#search-btn").click(function () {
+        $("[name='page']").val(0);
+        loaddata();
+    });
+
+    function loaddata() {
+        $("#table-container").load(/*[[@{/manage/blogs/search}]]*/"/manage/blogs/search", {
+            title: $("[name='title']").val(),
+            typeId: $("[name='typeId']").val(),
+            recommend: $("[name='recommend']").prop('checked'),
+            page: $("[name='pageInfo']").val()
+        });
+    }
+    //页码跳转
+    $('#pageTo').click(function () {
+        let val = $('#pageNums').val();
+        location.href = "/manage/blogs?pageNum="+val;
+    })
+
+    //消息提示关闭初始化
+    $('.message .close')
+        .on('click', function () {
+            $(this)
+                .closest('.message')
+                .transition('fade');
+        });
+
+    //清楚已选择的分类
+    $('#clear-btn')
+        .on('click', function() {
+            $('.ui.type.dropdown')
+                .dropdown('clear')
+            ;
+        });
+</script>
+
+</body>
+</html>

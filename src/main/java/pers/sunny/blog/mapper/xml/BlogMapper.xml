@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.sunny.blog.mapper.BlogMapper">
+
+    <resultMap id="myBlog" type="pers.sunny.blog.vo.BlogQuery">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="recommend" column="recommend"/>
+        <result property="published" column="published"/>
+        <result property="typeId" column="type_id"/>
+        <association property="type" javaType="pers.sunny.blog.entity.Type">
+            <id property="id" column="tId"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <select id="findAll" resultMap="myBlog">
+        SELECT b.id,b.title,b.update_time,b.recommend,b.published,b.type_id,t.id tId,t.name FROM blog b
+        LEFT JOIN type t ON b.type_id = t.id ${ew.customSqlSegment} AND b.deleted = 0
+    </select>
+
+    <resultMap id="firstPageBlog" type="pers.sunny.blog.vo.FirstPageBlog">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="firstPicture" column="first_picture"/>
+        <result property="views" column="views"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="description" column="description"/>
+        <result property="typeId" column="type_id"/>
+        <result property="typeName" column="name"/>
+        <result property="nickname" column="nickname"/>
+        <result property="avatar" column="avatar"/>
+    </resultMap>
+
+    <select id="getFirstPageBlog" resultMap="firstPageBlog">
+        select b.id,b.title,b.first_picture, b.views, b.comment_count,b.update_time,b.description,b.type_id,
+        t.name,u.nickname,u.avatar
+        from blog b
+        left join `type` t
+        on b.type_id = t.id
+        left join `user` u
+        on u.id = b.user_id
+        where b.deleted=0 and b.published = 1 order by b.create_time desc
+    </select>
+
+    <resultMap id="recommendBlog" type="pers.sunny.blog.vo.RecommendBlog">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="recommend" column="recommend"/>
+    </resultMap>
+
+    <!--推荐文章-->
+    <select id="getAllRecommendBlog" resultMap="recommendBlog">
+        select * from blog where blog.recommend = 1 and deleted=0 and published = 1 order by update_time desc limit #{size};
+    </select>
+
+    <!--搜索-->
+    <select id="selectListByQuery" resultType="pers.sunny.blog.vo.FirstPageBlog">
+        select b.id,b.title,b.first_picture, b.views, b.comment_count,b.update_time,b.description,b.type_id,
+        t.name as typeName,u.nickname,u.avatar
+        from blog b
+        left join `type` t
+        on b.type_id = t.id
+        left join `user` u
+        on u.id = b.user_id
+        ${ew.customSqlSegment} and b.deleted=0 and b.published = 1
+    </select>
+
+    <select id="listBlogsByTypeId" resultType="pers.sunny.blog.vo.FirstPageBlog">
+        select b.id,b.title,b.first_picture, b.views, b.comment_count,b.update_time,b.description,b.type_id,
+        t.name as typeName,u.nickname,u.avatar
+        from blog b
+        left join `type` t
+        on b.type_id = t.id
+        left join `user` u
+        on u.id = b.user_id
+        where b.type_id = #{typeId} and b.deleted=0 and b.published = 1
+    </select>
+
+    <select id="listBlogsByTagId" resultType="pers.sunny.blog.vo.FirstPageBlog">
+        select b.id,b.title,b.first_picture, b.views, b.comment_count,b.update_time,b.description,b.type_id,
+        t.name as typeName,u.nickname,u.avatar
+        from blog b
+        left join `type` t
+        on b.type_id = t.id
+        left join `user` u
+        on u.id = b.user_id
+        where b.tag_ids like CONCAT('%',#{tagId},'%') and b.deleted=0 and b.published = 1
+    </select>
+</mapper>

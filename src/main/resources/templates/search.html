@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="bar :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果</title>
+</head>
+<body>
+
+<!--导航-->
+<div th:replace="bar::header"></div>
+
+<!--中间内容-->
+<div id="pjax-container">
+    <div class="m-container-small m-padded-tb-big animated fadeInUpBig">
+        <div class="ui container">
+            <!--header-->
+            <div class="ui top attached segment">
+                <div class="ui middle aligned two column grid">
+                    <div class="column">
+                        <h3 class="ui blue header">搜索结果关于:&nbsp&nbsp&nbsp&nbsp<strong th:text="|&nbsp&nbsp${query}&nbsp&nbsp|" style="color: red"></strong></h3>
+                    </div>
+                    <div class="right aligned column">
+                        共 <h2 class="ui blue header m-inline-block m-text-thin" th:text="${pageInfo.total}"> 14 </h2>
+                        条记录
+                    </div>
+                </div>
+            </div>
+            <div class="ui top attached segment">
+                <div class="ui padded vertical segment m-padded-tb-small" th:each="blog : ${pageInfo.list}">
+                    <div class="ui padded middle aligned mobile reversed stackable grid">
+                        <div class="eleven wide column">
+                            <h3 class="ui header"><a href="#" data-pjax th:href="@{/sunnyblog/{id}(id=${blog.id})}"
+                                                     class="m-black" th:text="${blog.title}">你真的理解什么是财富自由吗?</a></h3>
+                            <p class="m-text" th:text="|${blog.description}......|">
+                                正确做好任何一件事情的前提是清晰、正确的理解目标。而事实是，我们很多人很多时候根本没有对目标正确的定义，甚至根本从来就没有想过，只是大家都那么做而已…...</p>
+                            <div class="ui grid">
+                                <div class="eleven wide column">
+                                    <div class="ui small horizontal link list">
+                                        <div class="item">
+                                            <img src="" th:src="@{${blog.avatar}}" alt="" class="ui avatar image">
+                                            <div class="content"><a href="#" data-pjax class="header" th:text="${blog.nickname}">Sunny</a>
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <i class="calendar icon small"></i><span
+                                                th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}">2020-08-02</span>
+                                        </div>
+                                        <div class="item">
+                                            <i class="eye icon small"></i> <span th:text="${blog.views}">2342</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="right aligned five wide column">
+                                    <a href="#" data-pjax th:href="@{/sunnyblog/types/{id}(id=${blog.typeId})}" class="ui blue basic label m-padded-tiny m-text-thin"
+                                       th:text="${blog.typeName}">认知升级</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="five wide column">
+                            <a href="#" data-pjax th:href="@{/sunnyblog/{id}(id=${blog.id})}" target="_blank">
+                                <img src="https://unsplash.it/800/450?image=1005" th:src="@{${blog.firstPicture}}" alt=""
+                                     class="ui rounded image">
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!--分页-->
+            <!--博客列表footer-->
+            <!--分页条第二版-->
+            <div class="ui attached segment m-bg" th:fragment="pagination">
+                <div class="ui stackable center aligned grid">
+                    <div th:if="${pageInfo.pages}>1">
+                        <a href="" data-pjax
+                           th:href="@{/sunnyblog/search(pageNum=${pageInfo.prePage},query=${query})}"
+                           class="ui button basic mini" th:if="${pageInfo.prePage}">上一页</a>
+                    </div>
+                    <div class="center aligned m-margin-top-small">
+                        第
+                        <span class="m-mycolor" th:text="${pageInfo.pageNum}">
+                                                1
+                                            </span>
+                        页/共
+                        <span class="m-mycolor" th:text="${pageInfo.pages}">
+                                                9
+                                            </span>
+                        页 共
+                        <span class="m-mycolor" th:text="${pageInfo.total}">
+                                                9
+                                            </span>
+                        条
+                    </div>
+                    <div class="ui icon transparent input" th:if="${pageInfo.pages} > 2">
+                        <input type="text" placeholder="页码" id="pageNums" style="width: 60px">
+                        <button id="pageTo" class="ui button small m-bg-bar">跳转</button>
+                    </div>
+                    <div th:if="${pageInfo.pages}>1">
+                        <a href="" data-pjax
+                           th:href="@{/sunnyblog/search(pageNum=${pageInfo.nextPage},query=${query})}"
+                           class="ui button basic mini" th:if="${pageInfo.nextPage}">下一页</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <br>
+    <br>
+    <!--底部footer-->
+    <div th:replace="bar::musicFooter"></div>
+
+    <!--由于thymeleaf模板的独特性，此代码在模板中是可用的，但是在静态页面中是一行注释-->
+    <!--/*/<th:block th:replace="bar::script"></th:block>/*/-->
+
+    <script>
+        $('.menu.toggle').click(function () {
+            $('.m-item').toggleClass('m-mobile-hide');
+        });
+        //页码跳转
+        $('#pageTo').click(function () {
+            let val = $('#pageNums').val();
+            let query = $('#query').val();
+            location.href = "/sunnyblog/search?pageNum=" + val + "&query=" + query;
+        })
+    </script>
+    <script>
+        $(function() {
+            $(document).pjax('a[data-pjax]', '#pjax-container',{fragment: '#pjax-container',timeout: 8000, type: 'GET'});
+
+            $(document).on('submit', 'form', function(event) {
+                //var container = $(this).closest('[pjax-container]');
+                $.pjax.submit(event, '#pjax-container', {
+                    fragment:'#pjax-container', timeout:8000
+                });
+            });
+
+            $(document).on('pjax:send', function() {
+                $(".loading").css("display", "block");
+            });
+
+            $(document).on('pjax:complete', function() {
+                $(".loading").css("display", "none");
+            });
+        })
+    </script>
+</body>
+</html>

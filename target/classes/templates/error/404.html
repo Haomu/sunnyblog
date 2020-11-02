@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viePort" content="width=device-width,initial-scale=1.0,maximum-scale=1">
+    <title>404</title>
+    <link rel="stylesheet" href="" th:href="@{~/static/css/animate.css}">
+    <link rel="stylesheet" href="" th:href="@{~/static/Semantic-UI/semantic.min.css}">
+    <link rel="stylesheet" href="" th:href="@{~/static/css/my.css}">
+</head>
+<body>
+    <!--顶部导航-->
+    <div th:replace="bar::header"></div>
+
+    <div class="m-container-small m-padded-tb-massive">
+        <div class="ui error message m-padded-tb-huge" >
+            <div class="ui contianer" style="text-align: center">
+                <h1>404 Not Found</h1>
+                <h3>对不起，您访问的资源不存在</h3>
+            </div>
+        </div>
+    </div>
+
+    <!--底部footer-->
+    <div th:replace="bar::noMusicFooter"></div>
+
+    <script src="" th:src="@{~/static/Semantic-UI/jquery-3.5.1.min.js}"></script>
+    <script src="" th:src="@{~/static/Semantic-UI/semantic.min.js}"></script>
+
+    <script>
+        $('.menu.toggle').click(function () {
+            $('.m-item').toggleClass('m-mobile-hide');
+        });
+
+    </script>
+</body>
+</html>
