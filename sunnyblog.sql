@@ -260,4 +260,4 @@ CREATE TABLE `user`  (
 -- ----------------------------
 INSERT INTO `user` VALUES (1, 'https://i.loli.net/2020/08/10/ZCv5rFPYqDmd3fp.jpg', '2020-08-04 20:05:43', '731574232@qq.com', 'Sunny', 'baec3767c952c683285044d59390adbc', 1, '2020-08-04 20:06:33', 'sunny', b'0');
 
-SET FOREIGN_KEY_CHECKS = 1;
+SET FOREIGN_KEY_CHECKS = 1; 
